@@ -19,21 +19,17 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-if (require.main === module) {
+// SOLO arranca el servidor si NO estamos haciendo pruebas
+if (process.env.NODE_ENV !== 'test') {
     app.listen(PORT, async () => {
-        console.log(`\n🚀 Servidor backend Express encendido en el puerto ${PORT}`);
-        
+        console.log(`\n🚀 Servidor backend encendido en el puerto ${PORT}`);
         try {
-            // Forzamos un "toque" a la base de datos para ver si responde
             const connection = await pool.getConnection();
-            console.log('✅ Conexión a MySQL Workbench exitosa!');
-            connection.release(); // La soltamos para que no consuma memoria
+            console.log('✅ Conexión a MySQL exitosa!');
+            connection.release();
         } catch (error) {
-            console.error('❌ Error fatal al conectar con MySQL:');
-            console.error('Revisa tu usuario y contraseña en el archivo .env');
-            console.error('Detalle técnico:', error.message);
+            console.error('❌ Error de conexión:', error.message);
         }
-        console.log('--------------------------------------------------\n');
     });
 }
 
